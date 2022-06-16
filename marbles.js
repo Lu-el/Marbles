@@ -2,7 +2,8 @@
 
 window.marbles = (() => {
   const FIGURE_RUS = ['камень', 'ножницы', 'бумага'];
-  const WORDS_RU = ['Компьютер', 'Ты', 'Результат игры', 'выиграл', 'Ничья', 'Вы точно хотите выйти?'];
+  const WORDS_RU = ['Компьютер', 'Ты', 'Результат игры',
+    'выиграл', 'Ничья', 'Вы точно хотите выйти?'];
 
   const startMessage = () => {
     console.log('Старт игры');
@@ -27,7 +28,7 @@ window.marbles = (() => {
       player: 5,
       bot: 5,
       queue: turn || 0,
-    }
+    };
 
     return function start() {
       const botNumber = getRandomDigit(1, result.bot);
@@ -41,8 +42,10 @@ window.marbles = (() => {
           } else {
             return start();
           }
-        } else if (+userNumber > result.player || +userNumber < 1 || Number.isNaN(+userNumber)) {
-          console.log(+userNumber);
+        } else if (+userNumber > result.player ||
+          +userNumber < 1 ||
+          Number.isNaN(+userNumber)) {
+          // console.log(+userNumber);
           return start();
         }
 
@@ -55,7 +58,6 @@ window.marbles = (() => {
           result.player += (+userNumber);
           result.bot -= (+userNumber);
         }
-
       } else {
         const userAnswer = confirm('Число чётное?') ? 'Чёт' : 'Нечет';
         if (userAnswer === botAnswer) {
@@ -67,19 +69,19 @@ window.marbles = (() => {
         }
       }
 
-      console.log("Вы: " + result.player, "Бот: " + result.bot);
+      console.log('Вы: ' + result.player, 'Бот: ' + result.bot);
       if (result.player <= 0 || result.bot <= 0) {
-        const endGame = result.player > result.bot ? confirm('Вы выиграли и останетесь в живых! Хотите сыграть ещё?') :
+        const endGame = result.player > result.bot ?
+        confirm('Вы выиграли и останетесь в живых! Хотите сыграть ещё?') :
           confirm('Вы проиграли... Хотите сыграть ещё?');
         if (endGame) {
           return game()();
-        };
+        }
         return;
       }
-
       result.queue += 1;
       return start();
-    }
+    };
   };
 
   const getRandomInclusive = (min, max) =>
@@ -97,6 +99,16 @@ window.marbles = (() => {
 
     const message = FIGURE_RUS.map(item => item.concat('? ')).join('');
 
+    const getWinner = (f, s) => {
+      const min = f > s ? s : f;
+      const max = f < s ? s : f;
+      if (min === 0 && max === 2) {
+        return FIGURE_RUS[max];
+      } else {
+        return FIGURE_RUS[min];
+      }
+    };
+
     const condition = (a, b) => {
       let winner;
       if (a === b) {
@@ -104,7 +116,7 @@ window.marbles = (() => {
       } else {
         winner = getWinner(a, b) === FIGURE_RUS[a] ? words[0] : words[1];
         alert(
-          `${words[0]}: ${FIGURE_RUS[a]}
+            `${words[0]}: ${FIGURE_RUS[a]}
           ${words[1]}: ${FIGURE_RUS[b]}
           ${winner} выиграл.`);
         if (winner === words[0]) {
@@ -114,16 +126,6 @@ window.marbles = (() => {
         }
       }
     };
-
-    const getWinner = (f, s) => {
-      const min = f > s ? s : f;
-      const max = f < s ? s : f;
-      if (min === 0 && max === 2) {
-        return FIGURE_RUS[max];
-      } else {
-        return FIGURE_RUS[min];
-      }
-    }
 
     return function start() {
       const playerQuest = prompt(message);
@@ -138,13 +140,14 @@ window.marbles = (() => {
       const playerVariant = playerQuest[0] || '';
 
       const indexComp = FIGURE_RUS.indexOf(computerVariant);
-      const indexPlayer = FIGURE_RUS.indexOf(FIGURE_RUS.find(element => element[0] === playerVariant));
+      const indexPlayer = FIGURE_RUS.indexOf(FIGURE_RUS.find(element =>
+        element[0] === playerVariant));
       if (indexPlayer < 0) {
         return start();
-      };
+      }
 
       if (indexComp === indexPlayer) {
-        alert(`${words[4]}. Попробуйте ещё раз...`)
+        alert(`${words[4]}. Попробуйте ещё раз...`);
         return start();
       }
       condition(indexComp, indexPlayer);
